@@ -22,12 +22,6 @@ public class CryptoController {
         this.cryptoService = cryptoService;
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Crypto> getCrypto(@PathVariable Long id) {
-//        Crypto crypto = cryptoService.getCrypto(id);
-//        return new ResponseEntity<>(crypto, HttpStatus.OK);
-//    }
-
     @GetMapping("/list")
     public ResponseEntity<List<Crypto>> getListCrypto() {
         return ResponseEntity.ok(cryptoService.findAllCrypto());

@@ -16,9 +16,8 @@ public class RunScheduler {
         this.cryptoService = cryptoService;
     }
 
-    @Scheduled(fixedDelay = 8000)
+    @Scheduled(fixedDelay = 60000)
     public void updateCrypto() {
         cryptoService.updateCoin();
     }
-
 }
