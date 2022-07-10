@@ -22,7 +22,9 @@ public class UserController {
 
     @PostMapping("/registration")
     public ResponseEntity<User> registration(@RequestBody User user) {
-        userService.saveUser(user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        boolean saveUser = userService.saveUser(user);
+        return saveUser
+                ? new ResponseEntity<>(user, (HttpStatus.CREATED))
+                : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 }

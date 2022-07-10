@@ -1,5 +1,6 @@
 package com.example.crypto_currency_watcher.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -25,5 +26,6 @@ public class User {
     private String symbol;
     @OneToOne(mappedBy = "users", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @ToString.Exclude
+    @JsonIgnore
     private Crypto crypto;
 }

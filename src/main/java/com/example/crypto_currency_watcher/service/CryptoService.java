@@ -50,7 +50,7 @@ public class CryptoService {
                         entity, new ParameterizedTypeReference<>() {
                         }, "80", "90", "48543");
         List<Crypto> cryptos = cryptoList.getBody();
-        System.out.println(cryptos);
+        log.info(cryptos);
 
         for (Crypto id : Objects.requireNonNull(cryptos)) {
             if (findAllCrypto().isEmpty()) {
@@ -60,18 +60,20 @@ public class CryptoService {
             }
 
             List<Crypto> cryptoByUsersNotNull = cryptoRepository.findCryptoByUsersNotNull();
-            if (!cryptoByUsersNotNull.isEmpty()) {
-                if (Objects.nonNull(cryptoList.getBody())) {
-                    for (Crypto getIdCrypto : cryptoByUsersNotNull) {
-                        Double newPrice = getIdCrypto.getPrice_usd();
-                        Double oldPrice = getIdCrypto.getUsers().getPrice_usd();
-                        Crypto crypto = cryptoRepository.findById(getIdCrypto.getId()).orElseThrow();
-                        double pricePercent = calculatePriceChangePercent(newPrice, oldPrice);
+            findNewPriceCryptoCompareOldPriceUser(cryptoByUsersNotNull);
+        }
+    }
 
-                        if (pricePercent > 1) {
-                            notifyUsers(crypto, getIdCrypto.getUsers(), pricePercent);
-                        }
-                    }
+    private void findNewPriceCryptoCompareOldPriceUser(List<Crypto> cryptoByUsersNotNull) {
+        if (!cryptoByUsersNotNull.isEmpty()) {
+            for (Crypto getIdCrypto : cryptoByUsersNotNull) {
+                Double newPrice = getIdCrypto.getPrice_usd();
+                Double oldPrice = getIdCrypto.getUsers().getPrice_usd();
+                double pricePercent = calculatePriceChangePercent(newPrice, oldPrice);
+
+                if (pricePercent > 1) {
+                    Crypto crypto = cryptoRepository.findById(getIdCrypto.getId()).orElseThrow();
+                    notifyUsers(crypto, getIdCrypto.getUsers(), pricePercent);
                 }
             }
         }

@@ -6,6 +6,7 @@ import com.example.crypto_currency_watcher.repository.CryptoRepository;
 import com.example.crypto_currency_watcher.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -22,10 +23,17 @@ public class UserService {
         this.cryptoRepository = cryptoRepository;
     }
 
-    public void saveUser(User user) {
-        Crypto bySymbol = cryptoRepository.findBySymbol(user.getSymbol());
-        user.setPrice_usd(bySymbol.getPrice_usd());
-        bySymbol.setUsers(user);
-        userRepository.save(user);
+    @Transactional
+    public boolean saveUser(User user) {
+        User byUsername = userRepository.findByUsername(user.getUsername());
+        if (byUsername == null) {
+            Crypto bySymbol = cryptoRepository.findBySymbol(user.getSymbol());
+            user.setPrice_usd(bySymbol.getPrice_usd());
+            bySymbol.setUsers(user);
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
     }
 }
