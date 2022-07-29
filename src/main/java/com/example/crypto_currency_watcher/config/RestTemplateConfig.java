@@ -17,8 +17,8 @@ public class RestTemplateConfig {
     }
 
     @Bean
-    public CryptoService cryptoService(CryptoRepository cryptoRepository) {
-        return new CryptoService(cryptoRepository, restTemplate());
+    public CryptoService cryptoService(CryptoRepository cryptoRepository, UserRepository userRepository) {
+        return new CryptoService(cryptoRepository, restTemplate(), userRepository);
     }
 
     @Bean
@@ -27,7 +27,7 @@ public class RestTemplateConfig {
     }
 
     @Bean
-    public RunScheduler runScheduler(CryptoRepository cryptoRepository) {
-        return new RunScheduler(cryptoService(cryptoRepository));
+    public RunScheduler runScheduler(CryptoRepository cryptoRepository, UserRepository userRepository) {
+        return new RunScheduler(cryptoService(cryptoRepository, userRepository));
     }
 }

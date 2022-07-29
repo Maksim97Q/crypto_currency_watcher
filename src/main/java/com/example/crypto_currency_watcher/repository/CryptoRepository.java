@@ -16,7 +16,4 @@ public interface CryptoRepository extends JpaRepository<Crypto, Long> {
     @Modifying
     @Query("update Crypto set price_usd = ?1 where id = ?2")
     void updateCrypto(Double price, Long id);
-
-    @Query("select c from Crypto c where c.users is not null")
-    List<Crypto> findCryptoByUsersNotNull();
 }

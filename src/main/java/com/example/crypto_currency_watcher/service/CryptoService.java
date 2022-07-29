@@ -3,6 +3,7 @@ package com.example.crypto_currency_watcher.service;
 import com.example.crypto_currency_watcher.entity.Crypto;
 import com.example.crypto_currency_watcher.entity.User;
 import com.example.crypto_currency_watcher.repository.CryptoRepository;
+import com.example.crypto_currency_watcher.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -21,10 +22,13 @@ public class CryptoService {
     private final static String ID_3 = "48543";
     private final RestTemplate restTemplate;
     private final CryptoRepository cryptoRepository;
+    private final UserRepository userRepository;
 
-    public CryptoService(CryptoRepository cryptoRepository, RestTemplate restTemplate) {
+    public CryptoService(CryptoRepository cryptoRepository, RestTemplate restTemplate,
+                         UserRepository userRepository) {
         this.cryptoRepository = cryptoRepository;
         this.restTemplate = restTemplate;
+        this.userRepository = userRepository;
     }
 
 
@@ -56,21 +60,21 @@ public class CryptoService {
                 cryptoRepository.updateCrypto(crypto.getPrice_usd(), crypto.getId());
             }
 
-            List<Crypto> cryptoByUsersNotNull = cryptoRepository.findCryptoByUsersNotNull();
-            findNewPriceCryptoCompareOldPriceUser(cryptoByUsersNotNull);
+            List<User> findUserByCryptoNotNull = userRepository.findUserByCryptoNotNull();
+            findNewPriceCryptoCompareOldPriceUser(findUserByCryptoNotNull);
         }
     }
 
-    private void findNewPriceCryptoCompareOldPriceUser(List<Crypto> cryptoByUsersNotNull) {
-        if (!cryptoByUsersNotNull.isEmpty()) {
-            for (Crypto getIdCrypto : cryptoByUsersNotNull) {
-                Double newPrice = getIdCrypto.getPrice_usd();
-                Double oldPrice = getIdCrypto.getUsers().getPrice_usd();
+    private void findNewPriceCryptoCompareOldPriceUser(List<User> findUserByCryptoNotNull) {
+        if (!findUserByCryptoNotNull.isEmpty()) {
+            for (User user : findUserByCryptoNotNull) {
+                Double newPrice = user.getCrypto().getPrice_usd();
+                Double oldPrice = user.getPrice_usd();
                 double pricePercent = calculatePriceChangePercent(newPrice, oldPrice);
 
                 if (pricePercent > 1) {
-                    Crypto crypto = cryptoRepository.findById(getIdCrypto.getId()).orElseThrow();
-                    notifyUsers(crypto, getIdCrypto.getUsers(), pricePercent);
+                    Crypto crypto = cryptoRepository.findById(user.getCrypto().getId()).orElseThrow();
+                    notifyUsers(crypto, user, pricePercent);
                 }
             }
         }
