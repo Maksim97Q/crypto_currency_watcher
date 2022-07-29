@@ -4,22 +4,14 @@ import com.example.crypto_currency_watcher.entity.Crypto;
 import com.example.crypto_currency_watcher.entity.User;
 import com.example.crypto_currency_watcher.repository.CryptoRepository;
 import com.example.crypto_currency_watcher.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 public class UserService {
-    private UserRepository userRepository;
-    private CryptoRepository cryptoRepository;
+    private final UserRepository userRepository;
+    private final CryptoRepository cryptoRepository;
 
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, CryptoRepository cryptoRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setCryptoRepository(CryptoRepository cryptoRepository) {
         this.cryptoRepository = cryptoRepository;
     }
 
