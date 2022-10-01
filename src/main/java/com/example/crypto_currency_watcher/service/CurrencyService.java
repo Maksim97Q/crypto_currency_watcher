@@ -26,14 +26,10 @@ public class CurrencyService {
     @Transactional
     @Scheduled(fixedDelay = 10000)
     public void schedule() throws IOException {
-        Document page = getName();
+        Document page = Jsoup.connect(URL).get();
         Element element = page.select("section[class=table-responsive]").first();
         Elements elements = Objects.requireNonNull(element).select("tr[class=tablesorter-hasChildRow]");
         saveCurrency(elements);
-    }
-
-    private Document getName() throws IOException {
-        return Jsoup.parse(new URL(URL), 3000);
     }
 
     private void saveCurrency(Elements elements) {
